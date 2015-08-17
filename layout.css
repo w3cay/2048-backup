@@ -32,7 +32,7 @@ header > div{
 		margin-right: 15px;
 }
 .head:last-of-type{
-	margin-right: 0px;
+	margin-right: 10px;
 }
 .head p{
 	height: 50%;
@@ -48,6 +48,14 @@ header > div{
 }
 .reset{
 	line-height: 60px;
+	cursor: pointer;
+	font-size: 24px;
+	font-weight: bold;
+	outline: none;
+	color: #fff;
+}
+.reset:hover{
+	background: #CCC562;
 }
 .grid-container{
 	color: #fff;
@@ -57,13 +65,24 @@ header > div{
 	margin: auto;
 	background: #BBADA0;
 	border-radius: 5px;
+	position: relative;
 }
-.grid-cell{
+.grid-container > span[id*="grid-cell"]{
 	display: block;
 	width: 100px;
 	height: 100px;
-	float: left;
 	border-radius: 5px;
-	margin:20px 0px 0px 20px;
-	background: rgba(255, 255, 255, 0.5);
+	position: absolute;
+	left: 0px;
+	top:0px;
+	background:#CDC1B4;
+}
+.grid-container > span[id*="num-cell"]{
+	overflow: hidden;
+	border-radius: 5px;
+	font-size: 42px;
+	text-align: center;
+	line-height: 100px;
+	position: absolute;
+	font-weight: bold;
 }
