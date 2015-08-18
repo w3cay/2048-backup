@@ -1,4 +1,7 @@
+//数字块数组
 var num = new Array();
+
+//执行
 $(document).ready(function(){
 	init();
 	$(".reset").click(function () {
@@ -6,12 +9,30 @@ $(document).ready(function(){
 	});
 });
 
+$(document).keydown(function (event) {
+	switch(event.keyCode){
+		case 37:
+			moveToLeft();
+			break;
+		case 38:
+			moveTo(up);
+			break;
+		case 39:
+			moveTo(right);
+			break;
+		case 40:
+			moveTo(down);
+			break;
+	}
+});
+//界面初始化
 function init () {
 
 	//方块布局初始化
 	for (var i = 0; i < 4; i++) {
 		for (var j = 0; j < 4; j++) {
-			$("#num-cell-" + i  + "-" +j).css({"width":"0px","height":"0px"});
+			$("#num-cell-" + i  + "-" +j).remove();
+			$(".grid-container").append('<span id="num-cell-'+i+'-'+j+'"></span>');
 			$("#grid-cell-" + i  + "-" +j).css({"left":getPosition(i,j)['left']+"px","top":getPosition(i,j)['top']+"px"});
 			$("#num-cell-" + i  + "-" +j).css({"left":getPosition(i,j)['left']+50+"px","top":getPosition(i,j)['top']+50+"px"});
 		};
@@ -25,13 +46,29 @@ function init () {
 	}
 
 	updateView();
+
 }
 
 function updateView () {
-	 getRandomNum ();
-	 getRandomNum ();
+	var hasSpace =16;
 
-		
+
+	for (var i = 0; i < 4; i++) {
+		for (var j = 0; j < 4; j++) {
+			if(num[i][j]!=0){
+				hasSpace--;
+				console.log(hasSpace);
+			}
+		};
+	};
+
+	if(hasSpace>0){
+		getRandomNum ();
+		getRandomNum ();
+	}
+	else if(hasSpace==0){
+		alert("GAME OVER!");
+	} ;
 }
 //获取当前cell位置
 function getPosition (i,j) {
@@ -74,4 +111,37 @@ function showNum (i,j,randnum) {
 		left:getPosition(i,j)['left']+"px",
 		top:getPosition(i,j)['top']+"px",
 	},100);
+}
+
+function moveToLeft () {
+	for (var i = 1; i <4; i++) {
+		for (var j = 0; j < 4; j++) {
+			var moveLen=getMoveLength(i,j);
+			if (num[i][j]!=0 && moveLen!=0) {
+				$("#num-cell-" + i  + "-" +j).animate({
+					left:"-="+moveLen*120,
+				},100);
+				
+				var aimX =  i-moveLen;
+				num[aimX][j]=num[i][j];
+				num[i][j]=0;	
+				$("#num-cell-" + aimX  + "-" +j).remove();
+				$("#num-cell-" + i  + "-" +j).attr("id","num-cell-" + aimX  + "-" +j);
+				$(".grid-container").append('<span id="num-cell-'+i+'-'+j+'"></span>');
+			    $("#num-cell-" + i + "-" +j).css({"width":"0px","height":"0px"});
+				$("#num-cell-" + i + "-" +j).css({"left":getPosition(i,j)['left']+50+"px","top":getPosition(i,j)['top']+50+"px"});
+			};
+		};
+	};
+	updateView ();
+}
+
+function getMoveLength (nowi,nowj) {
+	var empty=0;
+	for (var i = 0; i < nowi; i++) {
+		if (num[i][nowj]==0){
+			empty+=1;
+		}
+	};
+	return empty;
 }
