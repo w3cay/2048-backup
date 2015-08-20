@@ -11,12 +11,14 @@
 <header>
 	<h1>2048</h1>
 	<div>
-		<div class="head"><p>SCORE</p><p>1024</p> </div>
-		<div class="head"><p>BEST</p><p>2048</p> </div>
+		<div class="head"><p>SCORE</p><p id="score">0</p> </div>
+		<div class="head"><p>BEST</p><p id="best">0</p> </div>
 		<button class="head reset">NEW</button> >
 	</div>
 </header>
 	<div class="grid-container">
+			<div id="tip-bar">提示信息</div>
+
      		<span id="grid-cell-0-0"></span>
 			<span id="grid-cell-0-1"></span>
 			<span id="grid-cell-0-2"></span>
@@ -37,5 +39,6 @@
 			<span id="grid-cell-3-2"></span>
 			<span id="grid-cell-3-3"></span>
 	</div>
+
 </body>
 </html>

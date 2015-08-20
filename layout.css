@@ -88,3 +88,19 @@ header > div{
 	position: absolute;
 	font-weight: bold;
 }
+#tip-bar{
+	width: 100%;
+	height: 100%;
+	background:rgba(245, 239, 239, 0.8);
+	font-family: "microsoft yahei";
+	font-size: 32px;
+	color: #776e65;
+	position: absolute;
+	margin: auto;
+	border-radius: 5px;
+	z-index: 100;
+	text-align: center;
+	line-height: 500px;
+	display: none;
+	font-weight: bold;
+}

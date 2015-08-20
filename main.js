@@ -1,5 +1,7 @@
 //数字块数组
 var num = new Array();
+var score = 0;
+var best = 0;
 //执行
 $(document).ready(function() {
     init();
@@ -7,6 +9,7 @@ $(document).ready(function() {
         init();
     });
 });
+//按键事件
 $(document).keydown(function(event) {
     switch (event.keyCode) {
         case 37:
@@ -47,25 +50,46 @@ function init() {
             num[i][j] = 0;
         }
     }
-    getRandomNum();
-    getRandomNum();
+    $("#score").text("0");
+    score = 0;
+    $("#tip-bar").css("display", "none");
+    updateView();
+    updateView();
 }
-
+//更新界面
 function updateView() {
     var hasSpace = 16;
+    var isWin = false;
+    var can = false;
     for (var i = 0; i < 4; i++) {
         for (var j = 0; j < 4; j++) {
             if (num[i][j] != 0) {
-                hasSpace--;
+                --hasSpace;
             }
+            if (num[i][j] == 2048) {
+                isWin = true;
+            };
         };
     };
+    can = canMove();
     if (hasSpace > 0) {
         getRandomNum();
-    } else if (hasSpace == 0) {
-        alert("GAME OVER!");
-        init();
+    }
+    if (hasSpace == 0) {
+        if (can == false) {
+            tipOn("GAME OVER");
+        };
     };
+    if (score >= best) {
+        best = score;
+        $("#best").text(best);
+    };
+    $("#score").text(score);
+    if (isWin == true) {
+        tipOn("恭喜你过关了");
+    };
+    console.log(can);
+    console.log(hasSpace);
 }
 //获取当前cell位置
 function getPosition(i, j) {
@@ -108,7 +132,7 @@ function showNum(i, j, randnum) {
         top: getPosition(i, j)['top'] + "px",
     }, 100);
 }
-
+//向左移动
 function moveToLeft() {
     for (var i = 1; i < 4; i++) {
         for (var j = 0; j < 4; j++) {
@@ -122,6 +146,7 @@ function moveToLeft() {
                     var nextVal = num[next][j];
                     if (nextVal == num[i][j]) {
                         commonChange(i, j, next, num[i][j] * 2, (moveLen + 1));
+                        score = score + nextVal * 2;
                         $("#num-cell-" + next + "-" + j).text(nextVal * 2).css({
                             "background": getBackgroundColor(num[next][j]),
                             "color": getFrontColor(num[next][j])
@@ -164,7 +189,7 @@ function moveToLeft() {
     }
     updateView();
 }
-
+//向上移动
 function moveToUp() {
     for (var j = 1; j < 4; j++) {
         for (var i = 0; i < 4; i++) {
@@ -178,6 +203,7 @@ function moveToUp() {
                     var nextVal = num[i][next];
                     if (nextVal == num[i][j]) {
                         commonChange(i, j, next, num[i][j] * 2, (moveLen + 1));
+                        score = score + nextVal * 2;
                         $("#num-cell-" + i + "-" + next).text(nextVal * 2).css({
                             "background": getBackgroundColor(num[i][next]),
                             "color": getFrontColor(num[i][next])
@@ -221,7 +247,7 @@ function moveToUp() {
     }
     updateView();
 }
-
+//向右移动
 function moveToRight() {
     for (var i = 2; i >= 0; i--) {
         for (var j = 0; j < 4; j++) {
@@ -235,6 +261,7 @@ function moveToRight() {
                     var nextVal = num[next][j];
                     if (nextVal == num[i][j]) {
                         commonChange(i, j, next, num[i][j] * 2, (moveLen + 1));
+                        score = score + nextVal * 2;
                         $("#num-cell-" + next + "-" + j).text(nextVal * 2).css({
                             "background": getBackgroundColor(num[next][j]),
                             "color": getFrontColor(num[next][j])
@@ -277,7 +304,7 @@ function moveToRight() {
     }
     updateView();
 }
-
+//向下移动
 function moveToDown() {
     for (var j = 2; j >= 0; j--) {
         for (var i = 0; i < 4; i++) {
@@ -291,6 +318,7 @@ function moveToDown() {
                     var nextVal = num[i][next];
                     if (nextVal == num[i][j]) {
                         commonChange(i, j, next, num[i][j] * 2, (moveLen + 1));
+                        score = score + nextVal * 2;
                         $("#num-cell-" + i + "-" + next).text(nextVal * 2).css({
                             "background": getBackgroundColor(num[i][next]),
                             "color": getFrontColor(num[i][next])
@@ -334,7 +362,7 @@ function moveToDown() {
     }
     updateView();
 }
-
+//获取背景色
 function getBackgroundColor(num) {
     switch (num) {
         case 2:
@@ -372,11 +400,74 @@ function getBackgroundColor(num) {
             break;
     }
 }
-
+//获取前景色
 function getFrontColor(num) {
     if (num < 8) {
         return "#514D4D";
     } else {
         return "#fff";
     };
+}
+
+function tipOn(text) {
+    $("#tip-bar").fadeIn().text(text);
+}
+
+function canMove() {
+    var canMove = false;
+    //left
+    for (var j = 0; j < 4; j++) {
+        if (num[0][j] == 0 || num[0][j] == num[1][j]) {
+            canMove = true;
+            break;
+        }
+    };
+    //right
+    for (var j = 0; j < 4; j++) {
+        if (num[3][j] == 0 || num[3][j] == num[2][j]) {
+            canMove = true;
+            break;
+        }
+    };
+    //top
+    for (var i = 0; i < 4; i++) {
+        if (num[i][0] == 0 || num[i][0] == num[i][1]) {
+            canMove = true;
+            break;
+        }
+    };
+    //bottom
+    for (var i = 0; i < 4; i++) {
+        if (num[i][3] == 0 || num[i][3] == num[i][2]) {
+            canMove = true;
+            break;
+        }
+    };
+    //center
+    for (var i = 1; i < 3; i++) {
+        for (var j = 1; j < 3; j++) {
+            if (num[i][j] == 0) {
+                canMove = true;
+                break;
+            } else {
+                if (num[i][j] == num[i][j - 1]) {
+                    canMove = true;
+                    break;
+                } else
+                if (num[i][j] == num[i][j + 1]) {
+                    canMove = true;
+                    break;
+                } else
+                if (num[i][j] == num[i - 1][j]) {
+                    canMove = true;
+                    break;
+                } else
+                if (num[i][j] == num[i + 1][j]) {
+                    canMove = true;
+                    break;
+                }
+            };
+        };
+    };
+    return canMove;
 }
